@@ -1,0 +1,10 @@
+trigger InfrabladeContactSync on Contact (after insert, after update) {
+    // Loop through updated contacts
+    for (Contact c : Trigger.new) {
+        // Convert to JSON
+        String jsonBody = '{"id": "' + c.Id + '", "email": "' + c.Email + '", "firstName": "' + c.FirstName + '", "lastName": "' + c.LastName + '"}';
+        
+        // Call the async method to send data (Salesforce requires @future for HTTP calls in triggers)
+        InfrabladeHttpCallout.sendToInfrablade(jsonBody);
+    }
+}
