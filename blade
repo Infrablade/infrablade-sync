@@ -4,12 +4,23 @@
 
 COMMAND=$1
 
+function print_logo {
+    echo "    ____        ____             __    __            __   "
+    echo "   /  _/____   / __/_____ ____ _/ /_  / /____ _ ____/ /__ "
+    echo "   / / / __ \ / /_ / ___// __ \`/ __ \/ // __ \`/ / __  / _ \\"
+    echo " _/ / / / / // __// /   / /_/ / /_/ / // /_/ // /_/ /  __/"
+    echo "/___//_/ /_//_/  /_/    \__,_/_.___/_/ \__,_/ \__,_/\___/ "
+    echo "                                         v1.0 (Community)"
+    echo ""
+}
+
 function show_help {
+    print_logo
     echo "Usage: ./blade [command]"
     echo ""
     echo "Commands:"
     echo "  install     Download/Update the latest engine image"
-    echo "  start       Start the sync engine (requires key.json)"
+    echo "  start       Start the sync engine"
     echo "  stop        Stop the sync engine"
     echo "  logs        Show live logs"
     echo "  status      Check if engine is running"
@@ -17,32 +28,33 @@ function show_help {
 
 case $COMMAND in
     start)
-        echo "🚀 Starting Infrablade Engine..."
+        print_logo
+        echo "[INIT] Loading configuration..."
+        
         if [ ! -f "./key.json" ]; then
             echo "❌ Error: key.json not found in current folder."
-            echo "   Please place your Firebase Service Account key here and rename it to 'key.json'."
             exit 1
         fi
         
-        # Stop any old version first
+        echo "[DOCK] Stopping old instances..."
         docker rm -f infrablade-sync 2>/dev/null
         
-        # Run the new container
+        echo "[CORE] Starting engine..."
         docker run -d \
           -p 3000:3000 \
           --name infrablade-sync \
           -v "$(pwd)/key.json:/app/key.json" \
           -e FIREBASE_CREDENTIALS="/app/key.json" \
-          chr16/sync-engine:latest
+          chr16/sync-engine:latest > /dev/null
           
-        echo "✅ Engine started on port 3000."
-        echo "   View logs with: ./blade logs"
+        echo ""
+        echo ">> 🚀 ENGINE OPERATIONAL. Listening on Port 3000."
+        echo ">> Run './blade logs' to monitor connection."
         ;;
         
     stop)
         echo "🛑 Stopping Engine..."
         docker stop infrablade-sync && docker rm infrablade-sync
-        echo "   Engine stopped."
         ;;
         
     logs)
@@ -54,9 +66,8 @@ case $COMMAND in
         ;;
         
     install)
-        echo "⬇️  Pulling latest version from Docker Hub..."
+        echo "⬇️  Pulling latest version..."
         docker pull chr16/sync-engine:latest
-        echo "✅ Update complete."
         ;;
         
     *)
