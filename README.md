@@ -118,6 +118,6 @@ trigger InfrabladeContactSync on Contact (after insert, after update) {
 
 ## 🛡️ Enterprise & Licensing
 
-This is the Community Edition of Infrablade Sync. For Enterprise features (Bi-directional Sync, Audit Logs, SLA Support), please contact sales@infrablade.io.
+This is the Community Edition of Infrablade Sync. For Enterprise features (Bi-directional Sync, Audit Logs, SLA Support), please contact hello@infrablade.com
 
 Copyright © 2026 Infrablade. All rights reserved.
